@@ -1,31 +1,35 @@
-# Extended Python code for Josephus Problem with elimination order
-def josephus(person, k, index, eliminated):
-    # Base case: only one person left
-    if len(person) == 1:
+def josephus(people, step, index=0, eliminated=None):
+    #Initialize the list of eliminated people on the first call
+    if eliminated is None:
+        eliminated = []
+
+    #Base case: only one person remains
+    if len(people) == 1:
         print("Elimination order:", eliminated)
-        print("Survivor:", person[0])
+        print("Survivor:", people[0])
         return
 
-    # Find the index of the next person to be eliminated
-    index = (index + k) % len(person)
+    #Calculate the next person to eliminate
+    index = (index + step) % len(people)
 
-    # Add the eliminated person to the list
-    eliminated.append(person[index])
+    #Add eliminated person to the list and remove them from the circle
+    eliminated.append(people.pop(index))
 
-    # Remove the person from the circle
-    person.pop(index)
+    #Recursive call for the remaining people
+    josephus(people, step, index, eliminated)
 
-    # Recursive call for the remaining people
-    josephus(person, k, index, eliminated)
+def main():
+    # Get the total number of people in the circle
+    n = int(input("Enter the total number of people(N): "))
 
-# Driver code
-n = int(input("Enter Number of People: "))  # Number of people
-k = int(input("Enter the number on which every person is selected: "))   # Every "k"th person will be eliminated
-k -= 1  # Convert to 0-based index (k-1)
-index = 0
+    # Every k-th person will be eliminated
+    k = int(input("Enter the number on which every person is selected(k): "))
 
-# Initialize the circle
-person = list(range(1, n + 1))
-eliminated = []
+    # Create a list of people numbered from 1 to n
+    circle = list(range(1, n + 1))
 
-josephus(person, k, index, eliminated)
+    # Start the Josephus process with step adjusted for 0-based index
+    josephus(circle, k - 1)
+
+if __name__ == "__main__":
+    main()
